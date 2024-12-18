@@ -17,3 +17,7 @@
 ## 0.0.5
 
 * Feature: Add video support.
+
+## 0.0.6
+
+* Upgrade README.md

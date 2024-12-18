@@ -13,7 +13,12 @@ Supports platform
 
 ## Example
 ```dart
-    bool success =  await LivePhotoMaker.create(firstImagePath: firstImagePath, secondImagePath: secondImagePath, width: movWidth, height: movHeight);
+  bool success = await LivePhotoMaker.create(
+        coverImage: coverImage!.path,
+        imagePath: contentImage?.path,
+        voicePath: contentVoice?.path,
+        width: movWidth,
+        height: movHeight);
 ```
 
 
