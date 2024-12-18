@@ -47,11 +47,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-    <key>NSLocalNetworkUsageDescription</key>
-    <string>Need Get Local NetWork </string>
-    <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Need Save Photo</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>Need Pick Photo</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Need Save Photo</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need Pick Photo</string>
 </dict>
 </plist>

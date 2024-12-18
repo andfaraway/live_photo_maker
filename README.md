@@ -10,9 +10,6 @@ Supports platform
 |-------------|---------|------|
 | **Support** | ❌️ | ✔️ |
 
-## Usage
-
-To use this plugin, add `live_photo` as a [dependency in your pubspec.yaml file](https://flutter.dev/docs/development/platform-integration/platform-channels).
 
 ## Example
 ```dart

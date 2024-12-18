@@ -1,60 +1,43 @@
 PODS:
   - Flutter (1.0.0)
-  - fluttertoast (0.0.2):
+  - live_photo_maker (0.0.3):
     - Flutter
-    - Toast
-  - image_editor (1.0.0):
+  - path_provider_foundation (0.0.1):
     - Flutter
-  - live_photo_maker (0.0.1):
-    - Flutter
-  - path_provider_ios (0.0.1):
-    - Flutter
+    - FlutterMacOS
   - photo_manager (2.0.0):
     - Flutter
     - FlutterMacOS
-  - Toast (4.0.0)
   - video_player_avfoundation (0.0.1):
     - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
-  - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - image_editor (from `.symlinks/plugins/image_editor/ios`)
   - live_photo_maker (from `.symlinks/plugins/live_photo_maker/ios`)
-  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
-  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
-
-SPEC REPOS:
-  trunk:
-    - Toast
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
-  fluttertoast:
-    :path: ".symlinks/plugins/fluttertoast/ios"
-  image_editor:
-    :path: ".symlinks/plugins/image_editor/ios"
   live_photo_maker:
     :path: ".symlinks/plugins/live_photo_maker/ios"
-  path_provider_ios:
-    :path: ".symlinks/plugins/path_provider_ios/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
   video_player_avfoundation:
-    :path: ".symlinks/plugins/video_player_avfoundation/ios"
+    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
 
 SPEC CHECKSUMS:
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
-  fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
-  image_editor: eab82a302a6623a866da5145b7c4c0ee8a4ffbb4
-  live_photo_maker: 8baec8b58ff6cb8868b78e5c96eeb180e3bec1ac
-  path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
-  photo_manager: 4f6810b7dfc4feb03b461ac1a70dacf91fba7604
-  Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
-  video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  live_photo_maker: 7d57bfc70a120b4673c10871f354f4b1b6fde5fd
+  path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
+  photo_manager: ff695c7a1dd5bc379974953a2b5c0a293f7c4c8a
+  video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
 
-PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.15.2

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
@@ -10,24 +12,31 @@ class MethodChannelLivePhotoMaker extends LivePhotoMakerPlatform {
   final methodChannel = const MethodChannel('live_photo_maker');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
+  Future<bool> create({
+    required String coverImage,
+    String? imagePath,
+    String? voicePath,
+    required int width,
+    required int height,
+  }) async {
+    assert(Platform.isIOS, 'Live photo can only be used on the iOS platform.');
 
-  @override
-  Future<bool> create(
-      {required String firstImagePath,
-        required String secondImagePath,
-        required int width,
-        required int height}) async {
-    String movPath = await methodChannel.invokeMethod("image_to_mov",
-        [secondImagePath, width.toString(), height.toString()]);
-    String result = await methodChannel
-        .invokeMethod("create_live_photo", [firstImagePath, movPath]);
-    if(result == 'success'){
+    assert(
+        ((imagePath ?? '').isNotEmpty && (voicePath ?? '').isEmpty) ||
+            ((imagePath ?? '').isEmpty && (voicePath ?? '').isNotEmpty),
+        "Either imagePath or voicePath should have a value, and both cannot be empty.");
+
+    late String movPath;
+    if ((voicePath ?? '').isNotEmpty) {
+      movPath = voicePath!;
+    } else {
+      movPath = await methodChannel.invokeMethod("image_to_mov", [imagePath, width.toString(), height.toString()]);
+    }
+
+    String result = await methodChannel.invokeMethod("create_live_photo", [coverImage, movPath]);
+    if (result == 'success') {
       return true;
-    }else{
+    } else {
       return false;
     }
   }

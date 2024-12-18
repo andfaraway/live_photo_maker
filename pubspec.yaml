@@ -1,6 +1,6 @@
 name: live_photo_maker
 description: live photo maker for lock screen wallpaper.
-version: 0.0.3
+version: 0.0.5
 homepage: https://github.com/andfaraway/live_photo_maker
 
 environment:

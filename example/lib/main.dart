@@ -1,13 +1,13 @@
+//
+//  [Author] libin (https://github.com/andfaraway/nothing)
+//  [Date] 2022-05-25 11:21:13
+//
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:live_photo_maker/live_photo_maker.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-
-import 'image_editor_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,20 +18,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: LivePhotoPage(),);
+    return MaterialApp(
+      home: const LivePhotoPage(),
+      builder: EasyLoading.init(),
+    );
   }
 }
 
 class LivePhotoPage extends StatefulWidget {
-  const LivePhotoPage({Key? key}) : super(key: key);
+  const LivePhotoPage({super.key});
 
   @override
   State<LivePhotoPage> createState() => _LivePhotoPageState();
 }
 
 class _LivePhotoPageState extends State<LivePhotoPage> {
-  File? firstImage;
-  File? secondImage;
+  File? coverImage;
+  File? contentImage;
+  File? contentVoice;
   late int movWidth;
   late int movHeight;
 
@@ -39,7 +43,8 @@ class _LivePhotoPageState extends State<LivePhotoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Live Photo"),
+        title: const Text("Live Photo Maker"),
+        leading: const SizedBox.shrink(),
       ),
       body: Column(
         children: [
@@ -52,18 +57,18 @@ class _LivePhotoPageState extends State<LivePhotoPage> {
                       pickPhoto(0);
                     },
                     behavior: HitTestBehavior.opaque,
-                    child: firstImage != null
-                        ? Image.file(firstImage!)
+                    child: coverImage != null
+                        ? Image.file(coverImage!)
                         : Container(
-                      color: Colors.green,
-                      height: double.infinity,
-                      child: const Center(
-                        child: Text(
-                          'first photo',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
+                            color: Colors.green,
+                            height: double.infinity,
+                            child: const Center(
+                              child: Text(
+                                'Cover Image',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
                   ),
                 ),
                 Expanded(
@@ -72,34 +77,40 @@ class _LivePhotoPageState extends State<LivePhotoPage> {
                       pickPhoto(1);
                     },
                     behavior: HitTestBehavior.opaque,
-                    child: secondImage != null
-                        ? Image.file(secondImage!)
-                        : Container(
-                      color: Colors.cyan,
-                      height: double.infinity,
-                      child: const Center(
-                        child: Text(
-                          'second photo',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
+                    child: contentImage != null
+                        ? Image.file(contentImage!)
+                        : contentVoice != null
+                            ? const Center(
+                                child: Icon(Icons.play_circle, size: 88),
+                              )
+                            : Container(
+                                color: Colors.cyan,
+                                height: double.infinity,
+                                child: const Center(
+                                  child: Text(
+                                    'Content',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
                   ),
                 ),
               ],
             ),
           ),
           Expanded(
-            child: Center(
-              child: TextButton(
-                onPressed: () async {
-                  await create();
-                },
-                child: const Text(
-                  'create',
+            child: Builder(builder: (context) {
+              return Center(
+                child: TextButton(
+                  onPressed: () async {
+                    await create(context);
+                  },
+                  child: const Text(
+                    'create',
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           )
         ],
       ),
@@ -108,39 +119,98 @@ class _LivePhotoPageState extends State<LivePhotoPage> {
 
   Future<void> pickPhoto(int index) async {
     final List<AssetEntity>? result = await AssetPicker.pickAssets(context,
-        pickerConfig: const AssetPickerConfig(
+        pickerConfig: AssetPickerConfig(
           maxAssets: 1,
-          requestType: RequestType.image,
+          requestType: index == 0 ? RequestType.image : RequestType.common,
         ));
     if (result == null) {
       return;
     }
 
-    File? imageFile = await result.first.originFile;
-    if (!mounted) return;
-    File? file =
+    movWidth = result.first.width;
+    movHeight = result.first.height;
 
-    await Navigator.push(context, MaterialPageRoute(builder: (context)=>SimpleImageEditor(imageFile!)));
+    File? pickFile = await result.first.originFile;
+    if (!mounted || pickFile == null) return;
+
+    if (fileIsVideo(pickFile.path)) {
+      contentImage = null;
+      contentVoice = pickFile;
+      setState(() {});
+      return;
+    }
 
     if (index == 0) {
-      firstImage = file;
+      coverImage = pickFile;
     } else {
-      secondImage = file;
-      movWidth = result.first.width;
-      movHeight = result.first.height;
+      contentImage = pickFile;
+      contentVoice = null;
     }
     setState(() {});
   }
 
-  Future<void> create() async {
-    if (firstImage == null || secondImage == null) {
+  Future<void> pickVideo(int index) async {
+    final List<AssetEntity>? result = await AssetPicker.pickAssets(context,
+        pickerConfig: const AssetPickerConfig(
+          maxAssets: 1,
+          requestType: RequestType.video,
+        ));
+    if (result == null) {
       return;
     }
-    bool success =  await LivePhotoMaker.create(firstImagePath: firstImage!.path, secondImagePath: secondImage!.path, width: movWidth, height: movHeight);
-    if(success){
-      Fluttertoast.showToast(msg: 'success');
-    }else{
-      Fluttertoast.showToast(msg: 'failure');
+    contentVoice = await result.first.originFile;
+    setState(() {});
+  }
+
+  Future<void> create(BuildContext context) async {
+    if (coverImage == null || (contentImage == null && contentVoice == null)) {
+      return;
+    }
+
+    EasyLoading.show(status: 'waiting..', dismissOnTap: false);
+    bool success = await LivePhotoMaker.create(
+        coverImage: coverImage!.path,
+        imagePath: contentImage?.path,
+        voicePath: contentVoice?.path,
+        width: movWidth,
+        height: movHeight);
+
+    EasyLoading.dismiss();
+
+    if (context.mounted) {
+      final s = Scaffold.of(context).showBottomSheet((context) {
+        return Container(
+          width: double.infinity,
+          color: Colors.black87,
+          height: 50,
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          alignment: Alignment.center,
+          child: Text(
+            success ? 'success' : 'failure',
+            style: const TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        );
+      });
+
+      Future.delayed(const Duration(seconds: 1), () {
+        print('123');
+        s.close();
+      });
+    }
+  }
+
+  bool fileIsVideo(String filePath) {
+    final file = File(filePath);
+    final extension = file.path.split('.').last.toLowerCase();
+
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].contains(extension)) {
+      return false;
+    } else if (['mp4', 'mkv', 'avi', 'mov', 'flv'].contains(extension)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
