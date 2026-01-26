@@ -21,6 +21,8 @@ Supports platform
         height: movHeight);
 ```
 
+Currently Known Issue: Synthesized live photo from videos cannot be set as wallpapers
+
 
 
 
